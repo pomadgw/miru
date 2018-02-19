@@ -1,8 +1,9 @@
 declare module Miru {
-  export type IMiruDataFunction = () => Object;
+  export type IMiruDataFunction = () => object;
 
   export interface IMiruParameters {
-    data?: Object | IMiruDataFunction;
+    data?: object | IMiruDataFunction;
+    watch?: object
   }
 
   export interface IMiru {

@@ -42,4 +42,24 @@ describe('Miru', () => {
       expect(vm.count).toBe(2);
     })
   })
+
+  describe('watchers', () => {
+    let newCount = 0;
+    const vm = new Miru({
+      data: {
+        count: 1
+      },
+      watch: {
+        count(val) {
+          newCount = val;
+        }
+      }
+    });
+
+    test('is called on changed value', () => {
+      vm.count = 10;
+      expect(newCount).not.toBe(0);
+      expect(newCount).toBe(10);
+    })
+  })
 })
