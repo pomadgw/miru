@@ -1,0 +1,19 @@
+{
+  "presets": ["env"],
+  "plugins": [
+    [
+      "transform-react-jsx",
+      {
+        "pragma": "h2"
+      }
+    ],
+    [
+      "transform-runtime",
+      {
+          "helpers": false,
+          "polyfill": false,
+          "regenerator": true
+      }
+    ], "transform-decorators-legacy", "transform-class-properties"
+  ]
+}
