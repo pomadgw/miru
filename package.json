@@ -37,8 +37,8 @@
     "dev": "webpack --config webpack.development.js",
     "build": "webpack --config webpack.production.js",
     "test": "yarn run-test && yarn posttest",
-    "run-test": "nyc jest",
-    "posttest": "nyc report --reporter=json && codecov -f coverage/*.json"
+    "run-test": "jest --coverage",
+    "posttest": "codecov"
   },
   "jest": {
     "transform": {
