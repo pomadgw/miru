@@ -12,7 +12,7 @@ describe('Miru', () => {
         data: {
           count
         }
-      })
+      });
 
       expect(vm.count).toBe(count);
     })
@@ -25,9 +25,21 @@ describe('Miru', () => {
             count
           }
         }
-      })
+      });
 
       expect(vm.count).toBe(count);
+    })
+
+    test('be able to change its value', () => {
+      const vm = new Miru({
+        data: {
+          count: 1
+        }
+      });
+
+      vm.count = 2;
+      expect(vm.count).not.toBe(1);
+      expect(vm.count).toBe(2);
     })
   })
 })

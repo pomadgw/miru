@@ -24,6 +24,9 @@ class Miru implements Miru.IMiru {
       Object.defineProperty(this, key, {
         get() {
           return _(this).data[key];
+        },
+        set(value) {
+          _(this).data[key] = value;
         }
       })
     }
