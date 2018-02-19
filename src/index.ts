@@ -5,7 +5,7 @@ function _(key: object) : any {
   return _data.get(key);
 }
 
-class Miru implements Miru.IMiruDef {
+class Miru implements Miru.IMiru {
   constructor(params: Miru.IMiruParameters) {
     _data.set(this, {});
     const { data } = params;

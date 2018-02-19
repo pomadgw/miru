@@ -5,7 +5,7 @@ declare module Miru {
     data?: Object | IMiruDataFunction;
   }
 
-  export interface IMiruDef {
+  export interface IMiru {
     [propName: string]: any;
   }
 }
