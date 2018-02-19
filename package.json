@@ -33,6 +33,13 @@
     "webpack": "^3.10.0",
     "webpack-merge": "^4.1.1"
   },
+  "scripts": {
+    "dev": "webpack --config webpack.development.js",
+    "build": "webpack --config webpack.production.js",
+    "test": "yarn run-test && yarn posttest",
+    "run-test": "nyc jest",
+    "posttest": "nyc report --reporter=json && codecov -f coverage/*.json"
+  },
   "jest": {
     "transform": {
       "^.+\\.tsx?$": "ts-jest"
