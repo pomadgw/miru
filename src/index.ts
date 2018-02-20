@@ -15,8 +15,9 @@ class Miru implements Miru.IMiru {
     const { data, watch } = params;
     const { render } = params;
 
-    if (render != null)
+    if (render != null) {
       _(this).render = render.bind(this);
+    }
 
     if (data instanceof Function) {
       this.setData(data(), watch);
@@ -31,8 +32,11 @@ class Miru implements Miru.IMiru {
   }
 
   private doPatch() {
-    const vnode = _(this).render();
-    patch(_(this).tree, vnode);
+    if (_(this).render != null) {
+      const vnode = _(this).render();
+      patch(_(this).tree, vnode);
+      _(this).tree = vnode;
+    }
   }
 
   private setData(data, watch) {
@@ -56,12 +60,12 @@ class Miru implements Miru.IMiru {
           if (_(this).watch[key] != null) {
             _(this).watch[key](value);
           }
+
+          this.doPatch();
         }
       })
     }
   }
-
-
 }
 
 export default Miru;
