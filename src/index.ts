@@ -8,10 +8,14 @@ function _(key: object) : any {
 class Miru implements Miru.IMiru {
   constructor(params: Miru.IMiruParameters) {
     _data.set(this, {});
-    const { data, watch, methods } = params;
+    const { data, watch, methods, computed } = params;
 
     if (methods != null) {
       this.setMethods(methods);
+    }
+
+    if (computed != null) {
+      this.setComputed(computed);
     }
 
     if (data instanceof Function) {
@@ -48,6 +52,19 @@ class Miru implements Miru.IMiru {
           if (_(this).watch[key] != null) {
             _(this).watch[key](value);
           }
+        }
+      })
+    }
+  }
+
+  private setComputed(computed) {
+    _(this).computedFunctions = {};
+    for (let key of Object.keys(computed)) {
+      _(this).computedFunctions[key] = computed[key].bind(this);
+
+      Object.defineProperty(this, key, {
+        get() {
+          return _(this).computedFunctions[key]();
         }
       })
     }

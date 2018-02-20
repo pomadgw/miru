@@ -7,8 +7,9 @@ declare module Miru {
 
   export interface IMiruParameters {
     data?: object | IMiruDataFunction;
-    watch?: object,
-    methods?: IMiruMethods
+    watch?: object;
+    methods?: IMiruMethods;
+    computed?: IMiruMethods;
   }
 
   export interface IMiru {
