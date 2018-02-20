@@ -1,4 +1,8 @@
 /// <reference path="index.d.ts" />
+import { init } from 'snabbdom';
+import snabprop from 'snabbdom/modules/props';
+
+const patch = init([snabprop]);
 
 const _data = new WeakMap();
 function _(key: object) : any {
@@ -9,12 +13,26 @@ class Miru implements Miru.IMiru {
   constructor(params: Miru.IMiruParameters) {
     _data.set(this, {});
     const { data, watch } = params;
+    const { render } = params;
+
+    if (render != null)
+      _(this).render = render.bind(this);
 
     if (data instanceof Function) {
       this.setData(data(), watch);
     } else {
       this.setData(data, watch);
     }
+  }
+
+  $mount(selector) {
+    _(this).tree = document.querySelector(selector);
+    this.doPatch();
+  }
+
+  private doPatch() {
+    const vnode = _(this).render();
+    patch(_(this).tree, vnode);
   }
 
   private setData(data, watch) {
@@ -42,6 +60,8 @@ class Miru implements Miru.IMiru {
       })
     }
   }
+
+
 }
 
 export default Miru;

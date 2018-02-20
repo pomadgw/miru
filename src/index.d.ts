@@ -3,10 +3,12 @@ declare module Miru {
 
   export interface IMiruParameters {
     data?: object | IMiruDataFunction;
-    watch?: object
+    watch?: object;
+    render?: IMiruDataFunction;
   }
 
   export interface IMiru {
+    $mount: (selector: string) => void;
     [propName: string]: any;
   }
 }
