@@ -5,7 +5,7 @@ describe('Miru', () => {
   describe('mount', () => {
 
     test('properly mount a simple app', () => {
-      const vm = new Miru({
+      const vm: Miru.IMiru = new Miru({
         data: {
           count: 1
         },
@@ -25,7 +25,7 @@ describe('Miru', () => {
     })
 
     test('is able to injected data value into dom', () => {
-      const vm = new Miru({
+      const vm: Miru.IMiru = new Miru({
         data: {
           count: 1
         },
@@ -44,7 +44,7 @@ describe('Miru', () => {
       expect(dom.innerHTML).toBe(`${vm.count}`);
     })
     test('is able to update dom when a value is changed', () => {
-      const vm = new Miru({
+      const vm: Miru.IMiru = new Miru({
         data: {
           count: 1
         },

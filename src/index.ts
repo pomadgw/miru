@@ -12,8 +12,15 @@ function _(key: object) : any {
 class Miru implements Miru.IMiru {
   constructor(params: Miru.IMiruParameters) {
     _data.set(this, {});
-    const { data, watch } = params;
-    const { render } = params;
+    const { data, watch, methods, computed, render } = params;
+
+    if (methods != null) {
+      this.setMethods(methods);
+    }
+
+    if (computed != null) {
+      this.setComputed(computed);
+    }
 
     if (render != null) {
       _(this).render = render.bind(this);
@@ -23,6 +30,12 @@ class Miru implements Miru.IMiru {
       this.setData(data(), watch);
     } else {
       this.setData(data, watch);
+    }
+  }
+
+  private setMethods(methods) {
+    for (let key of Object.keys(methods)) {
+      this[key] = methods[key].bind(this);
     }
   }
 
@@ -62,6 +75,19 @@ class Miru implements Miru.IMiru {
           }
 
           this.doPatch();
+        }
+      })
+    }
+  }
+
+  private setComputed(computed) {
+    _(this).computedFunctions = {};
+    for (let key of Object.keys(computed)) {
+      _(this).computedFunctions[key] = computed[key].bind(this);
+
+      Object.defineProperty(this, key, {
+        get() {
+          return _(this).computedFunctions[key]();
         }
       })
     }

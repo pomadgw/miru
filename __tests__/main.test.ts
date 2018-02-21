@@ -8,7 +8,7 @@ describe('Miru', () => {
   describe('data attribute', () => {
     test('create getter for accessing its content in object', () => {
       const count = 1;
-      const vm = new Miru({
+      const vm: Miru.IMiru = new Miru({
         data: {
           count
         }
@@ -19,7 +19,7 @@ describe('Miru', () => {
 
     test('create getter for accessing its content in function that returns object', () => {
       const count = 1;
-      const vm = new Miru({
+      const vm: Miru.IMiru = new Miru({
         data() {
           return {
             count
@@ -31,7 +31,7 @@ describe('Miru', () => {
     })
 
     test('be able to change its value', () => {
-      const vm = new Miru({
+      const vm: Miru.IMiru = new Miru({
         data: {
           count: 1
         }
@@ -45,7 +45,7 @@ describe('Miru', () => {
 
   describe('watchers', () => {
     let newCount = 0;
-    const vm = new Miru({
+    const vm: Miru.IMiru = new Miru({
       data: {
         count: 1
       },
