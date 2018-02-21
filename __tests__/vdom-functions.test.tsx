@@ -3,6 +3,14 @@ import Miru from '../src/index';
 import { mIf } from '../src/functions';
 
 describe('Miru', () => {
+  describe('hyper', () => {
+    test('properly set styles', () => {
+      const element = <div style="color: black">Test</div>;
+
+      expect(element.data.style).toBeDefined();
+      expect(element.data.style.color).toBe('black');
+    })
+  })
   test('is able to update dom with jsx', () => {
     const vm: Miru.IMiru = new Miru({
       data: {
