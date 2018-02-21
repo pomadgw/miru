@@ -1,8 +1,10 @@
 /// <reference path="index.d.ts" />
 import { init } from 'snabbdom';
 import snabprop from 'snabbdom/modules/props';
+import snabattr from 'snabbdom/modules/attributes';
+import { hyper } from '../src/h';
 
-const patch = init([snabprop]);
+const patch = init([snabprop, snabattr]);
 
 const _data = new WeakMap();
 function _(key: object) : any {
@@ -42,6 +44,10 @@ class Miru implements Miru.IMiru {
   $mount(selector) {
     _(this).tree = document.querySelector(selector);
     this.doPatch();
+  }
+
+  static h(tagname, props, ...children) {
+    return hyper(tagname, props, ...children);
   }
 
   private doPatch() {
