@@ -10,9 +10,11 @@ declare module Miru {
     watch?: object;
     methods?: IMiruMethods;
     computed?: IMiruMethods;
+    render?: IMiruDataFunction;
   }
 
   export interface IMiru {
+    $mount: (selector: string) => void;
     [propName: string]: any;
   }
 }
