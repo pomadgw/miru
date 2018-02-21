@@ -11,6 +11,25 @@ describe('Miru', () => {
       expect(element.data.style.color).toBe('black');
     })
   })
+  test('can inject jsx', () => {
+    const vm: Miru.IMiru = new Miru({
+      data: {
+        count: 1,
+        show: false,
+      },
+      render() {
+        const me = <div>Hello</div>;
+        return (me);
+      }
+    });
+
+    document.body.innerHTML = `
+    <div id="app"></div>
+    `;
+
+    vm.$mount('#app');
+    expect(document.body.textContent.trim()).toBe(`Hello`);
+  })
   test('is able to update dom with jsx', () => {
     const vm: Miru.IMiru = new Miru({
       data: {

@@ -42,6 +42,6 @@ function embedEvents(attrs: Record<string, string | number | boolean>, virtualdo
 }
 
 export function hyper(tagname, attr, ...children) {
-  const attrs = ({ attrs: attr } as VNodeData);
+  const attrs = ({ attrs: attr || {} } as VNodeData);
   return process(h(tagname, attrs, children));
 }
