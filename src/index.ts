@@ -2,9 +2,10 @@
 import { init } from 'snabbdom';
 import snabprop from 'snabbdom/modules/props';
 import snabattr from 'snabbdom/modules/attributes';
+import snabevent from 'snabbdom/modules/eventlisteners';
 import { hyper } from '../src/h';
 
-const patch = init([snabprop, snabattr]);
+const patch = init([snabprop, snabattr, snabevent]);
 
 const _data = new WeakMap();
 function _(key: object) : any {

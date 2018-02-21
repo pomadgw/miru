@@ -20,7 +20,25 @@ function process(virtualdom: VNode) {
     virtualdom.data['style'][attr] = value;
   });
 
+  const attrs = virtualdom.data['attrs'];
+
+  embedEvents(attrs, virtualdom);
+
   return virtualdom;
+}
+
+function embedEvents(attrs: Record<string, string | number | boolean>, virtualdom: VNode) {
+  const events = Object.keys(attrs).filter(s => s.slice(0, 2) === 'on').reduce((acc, val) => {
+    acc[val] = attrs[val];
+    return acc;
+  }, {});
+
+  virtualdom.data['attrs'] = omit(virtualdom.data['attrs'], Object.keys(events));
+
+  virtualdom.data['on'] = {};
+  for (let key in events) {
+    virtualdom.data['on'][key.slice(2)] = events[key];
+  }
 }
 
 export function hyper(tagname, attr, ...children) {
