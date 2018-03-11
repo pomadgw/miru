@@ -3,19 +3,17 @@ import { init } from 'snabbdom';
 import snabprop from 'snabbdom/modules/props';
 import snabattr from 'snabbdom/modules/attributes';
 import snabevent from 'snabbdom/modules/eventlisteners';
-import { hyper } from '../src/h';
+import { hyper, processComponent } from '../src/h';
+import { _data, _ } from './data';
 
 const patch = init([snabprop, snabattr, snabevent]);
-
-const _data = new WeakMap();
-function _(key: object) : any {
-  return _data.get(key);
-}
 
 class Miru implements Miru.IMiru {
   constructor(params: Miru.IMiruParameters) {
     _data.set(this, {});
-    const { data, watch, methods, computed, render } = params;
+    const { data, watch, methods, computed, render, components, props } = params;
+
+    _(this).components = components;
 
     if (methods != null) {
       this.setMethods(methods);
@@ -29,10 +27,17 @@ class Miru implements Miru.IMiru {
       _(this).render = render.bind(this);
     }
 
-    if (data instanceof Function) {
-      this.setData(data(), watch);
-    } else {
-      this.setData(data, watch);
+    if (props != null) {
+      _(this).propsParams = props;
+      this.setupProps(props);
+    }
+
+    if (data) {
+      if (data instanceof Function) {
+        this.setData(data(), watch);
+      } else {
+        this.setData(data, watch);
+      }
     }
   }
 
@@ -51,12 +56,20 @@ class Miru implements Miru.IMiru {
     return hyper(tagname, props, ...children);
   }
 
+  setProps(props) {
+    Object.keys(props).forEach((key) => {
+      this[key] = props[key];
+    });
+  }
+
   private doPatch() {
     if (_(this).render != null) {
       const vnode = _(this).render();
+      processComponent(vnode, _(this).components);
       patch(_(this).tree, vnode);
       _(this).tree = vnode;
     }
+    return _(this).tree;
   }
 
   private setData(data, watch) {
@@ -76,6 +89,34 @@ class Miru implements Miru.IMiru {
         },
         set(value) {
           _(this).data[key] = value;
+
+          if (_(this).watch[key] != null) {
+            _(this).watch[key](value);
+          }
+
+          this.doPatch();
+        }
+      })
+    }
+  }
+
+  private setupProps(props) {
+    _(this).props = {};
+    // _(this).watch = _(this).watch || {};
+
+    // if (watch != null) {
+    //   for(let key of Object.keys(watch)) {
+    //     _(this).watch[key] = watch[key].bind(this);
+    //   }
+    // }
+
+    for (let key of Object.keys(props)) {
+      Object.defineProperty(this, key, {
+        get() {
+          return _(this).props[key];
+        },
+        set(value) {
+          _(this).props[key] = value;
 
           if (_(this).watch[key] != null) {
             _(this).watch[key](value);

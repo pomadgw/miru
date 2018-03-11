@@ -1,9 +1,9 @@
 import h from 'snabbdom/h';
 import { VNode, VNodeData } from 'snabbdom/vnode';
 import omit from 'lodash.omit';
+import { _data, _ } from './data';
 
-function process(virtualdom: VNode) {
-
+function process(virtualdom: VNode, attr?: any) {
   virtualdom.data['style'] = virtualdom.data['style'] || {};
 
   let styleStr: string = '';
@@ -43,5 +43,18 @@ function embedEvents(attrs: Record<string, string | number | boolean>, virtualdo
 
 export function hyper(tagname, attr, ...children) {
   const attrs = ({ attrs: attr || {} } as VNodeData);
-  return process(h(tagname, attrs, children));
+  return process(h(tagname, attrs, children), attr);
+}
+
+export function processComponent(vnode, components) {
+  if (components) {
+    vnode.children.forEach((el, idx) => {
+      if (el.sel in components) {
+        const obj = components[el.sel];
+        obj.setProps(el.data.attrs);
+        vnode.children[idx] = _(obj).render();
+        console.log(vnode.children[idx])
+      }
+    });
+  }
 }
