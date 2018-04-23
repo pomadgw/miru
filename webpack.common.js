@@ -1,8 +1,8 @@
 // Basen on config at http://ccoenraets.github.io/es6-tutorial/setup-webpack/
-const CleanWebpackPlugin = require('clean-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin')
 
-var path = require('path');
-var webpack = require('webpack');
+var path = require('path')
+var webpack = require('webpack')
 
 module.exports = {
   // Currently we need to add '.ts' to the resolve.extensions array.
@@ -11,10 +11,10 @@ module.exports = {
   },
   entry: {
     miru: './src/index.ts',
-    example: './src/example.jsx',
+    example: './src/example.jsx'
   },
   plugins: [
-    new CleanWebpackPlugin(['build']),
+    new CleanWebpackPlugin(['build'])
   ],
   output: {
     path: path.resolve(__dirname, 'build'),
@@ -38,4 +38,4 @@ module.exports = {
     colors: true
   },
   devtool: 'source-map'
-};
+}
