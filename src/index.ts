@@ -6,12 +6,9 @@ import snabevent from "snabbdom/modules/eventlisteners";
 import toVNode from "snabbdom/tovnode";
 import { hyper, processComponent } from "../src/h";
 import { _data, _ } from "./data";
+import Dependency from "./dep";
 
 const patch = init([snabprop, snabattr, snabevent]);
-
-const dep = {
-  target: null
-};
 
 class Miru implements Miru.IMiru {
   constructor(params: Miru.IMiruParameters) {
@@ -117,13 +114,12 @@ class Miru implements Miru.IMiru {
     }
 
     for (let key of Object.keys(data)) {
-      // const deps = new Set();
-      _(this).deps[key] = new Set();
+      const deps = new Dependency();
 
       Object.defineProperty(this, key, {
         get() {
-          if (dep.target) {
-            _(this).deps[key].add(dep.target);
+          if (Dependency.hasTarget()) {
+            deps.depend(key);
           }
 
           return _(this).data[key];
@@ -131,17 +127,16 @@ class Miru implements Miru.IMiru {
         set(value) {
           _(this).data[key] = value;
 
-          if (_(this).deps[key].size > 0) {
-            _(this).deps[key].forEach(d => {
-              this.notify(d, value);
-            });
-          }
+          deps.clearUpDeps(key);
+          deps.notify(value, this.notify.bind(this));
 
           this.notify(key, value);
 
           this.doPatch();
         }
       });
+
+      _(this).deps[key] = deps;
     }
   }
 
@@ -171,26 +166,33 @@ class Miru implements Miru.IMiru {
     _(this).computedCaches = {};
 
     for (let key of Object.keys(computed)) {
+      const deps = new Dependency();
+
       _(this).computedFunctions[key] = computed[key].bind(this);
       _(this).computedCaches[key] = null;
 
       this.observe(key, () => {
         _(this).computedCaches[key] = null;
+        deps.clearUpDeps(key);
+        deps.notify(null, this.notify.bind(this));
       });
 
       Object.defineProperty(this, key, {
         get() {
-          if (dep.target === null) {
-            dep.target = key;
+          if (Dependency.hasTarget()) {
+            deps.depend(key);
           }
 
+          Dependency.target = key;
+
           if (_(this).computedCaches[key] === null) {
+            deps.createEmptySubscribes(key);
             _(this).computedCaches[key] = _(this).computedFunctions[key]();
           }
 
           const value = _(this).computedCaches[key];
 
-          dep.target = null;
+          Dependency.target = null;
 
           return value;
         },
