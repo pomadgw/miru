@@ -110,13 +110,6 @@ class Miru implements Miru.IMiru {
 
   private setupProps(props) {
     _(this).props = {};
-    // _(this).watch = _(this).watch || {};
-
-    // if (watch != null) {
-    //   for(let key of Object.keys(watch)) {
-    //     _(this).watch[key] = watch[key].bind(this);
-    //   }
-    // }
 
     for (let key of Object.keys(props)) {
       Object.defineProperty(this, key, {
