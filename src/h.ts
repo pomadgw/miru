@@ -37,7 +37,7 @@ function embedEvents(attrs: Record<string, string | number | boolean>, virtualdo
 
   virtualdom.data['on'] = {};
   for (let key in events) {
-    virtualdom.data['on'][key.slice(2)] = events[key];
+    virtualdom.data['on'][key.slice(2).toLowerCase()] = events[key];
   }
 }
 
