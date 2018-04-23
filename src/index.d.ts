@@ -11,6 +11,8 @@ declare module Miru {
     methods?: IMiruMethods;
     computed?: IMiruMethods;
     render?: IMiruDataFunction;
+    components?: object;
+    props?: Array<string> | object;
   }
 
   export interface IMiru {

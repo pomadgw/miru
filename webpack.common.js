@@ -10,7 +10,8 @@ module.exports = {
     extensions: ['.ts', '.tsx', '.js', '.jsx']
   },
   entry: {
-    miru: './src/index.ts'
+    miru: './src/index.ts',
+    example: './src/example.jsx',
   },
   plugins: [
     new CleanWebpackPlugin(['build']),
