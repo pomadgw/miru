@@ -27,6 +27,7 @@
     "jest": "^22.1.4",
     "nyc": "^11.4.1",
     "source-map-loader": "^0.2.3",
+    "standard": "^11.0.1",
     "ts-jest": "^22.0.2",
     "typescript": "^2.6.2",
     "uglifyjs-webpack-plugin": "^1.1.6",

@@ -1,5 +1,5 @@
-const merge = require('webpack-merge');
-const common = require('./webpack.common.js');
+const merge = require('webpack-merge')
+const common = require('./webpack.common.js')
 const { CheckerPlugin } = require('awesome-typescript-loader')
 
 module.exports = merge(common, {
@@ -10,4 +10,4 @@ module.exports = merge(common, {
   plugins: [
     new CheckerPlugin()
   ]
-});
+})

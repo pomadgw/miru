@@ -19,4 +19,9 @@ declare module Miru {
     $mount: (selector: string) => void;
     [propName: string]: any;
   }
+
+  export interface Dependency {
+    subscribers: Map<string, any>;
+    deps: Array<any>;
+  }
 }
