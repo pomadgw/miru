@@ -10,12 +10,21 @@ describe("Miru", () => {
     });
 
     test("add depend subscribers", () => {
-      Dependency.target = 'target';
       const dep = new Dependency();
+
+      expect(Dependency.target).not.toBe("target");
+
+      Dependency.target = 'target';
       dep.createEmptySubscribes('target');
+      expect(Dependency.target).toBe('target');
+
+      expect(dep.deps.has("target")).toBeFalsy();
 
       dep.depend("test");
-      expect(dep.deps.includes('target')).toBeTruthy();
+
+      expect(Dependency.target).toBe('target');
+      expect(dep.deps.has('target')).toBeTruthy();
+
       expect(dep.subscribers["target"].includes("test")).toBeTruthy();
 
       dep.depend("test");
@@ -27,7 +36,7 @@ describe("Miru", () => {
       const dep = new Dependency();
 
       dep.depend("test");
-      expect(dep.deps.includes("target")).toBeFalsy();
+      expect(dep.deps.has("target")).toBeFalsy();
       expect(dep.subscribers["target"]).toBeUndefined();
     });
   });

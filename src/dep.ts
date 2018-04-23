@@ -12,7 +12,7 @@ export default class Dependency implements Miru.Dependency {
 
   constructor() {
     this.subscribers = {};
-    this.deps = [];
+    this.deps = new Set();
   }
 
   static hasTarget() {
@@ -24,9 +24,7 @@ export default class Dependency implements Miru.Dependency {
   }
 
   depend(dep) {
-    if (!this.deps.includes(Dependency.target)) {
-      this.deps.push(Dependency.target);
-    }
+    this.deps.add(Dependency.target);
 
     if (
       this.subscribers[Dependency.target] &&
