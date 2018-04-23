@@ -1,20 +1,33 @@
 /// <reference path="index.d.ts" />
-import { init } from 'snabbdom';
-import snabprop from 'snabbdom/modules/props';
-import snabattr from 'snabbdom/modules/attributes';
-import snabevent from 'snabbdom/modules/eventlisteners';
+import { init } from "snabbdom";
+import snabprop from "snabbdom/modules/props";
+import snabattr from "snabbdom/modules/attributes";
+import snabevent from "snabbdom/modules/eventlisteners";
 import toVNode from "snabbdom/tovnode";
-import { hyper, processComponent } from '../src/h';
-import { _data, _ } from './data';
+import { hyper, processComponent } from "../src/h";
+import { _data, _ } from "./data";
 
 const patch = init([snabprop, snabattr, snabevent]);
+
+const dep = {
+  target: null
+};
 
 class Miru implements Miru.IMiru {
   constructor(params: Miru.IMiruParameters) {
     _data.set(this, {});
-    const { data, watch, methods, computed, render, components, props } = params;
+    const {
+      data,
+      watch,
+      methods,
+      computed,
+      render,
+      components,
+      props
+    } = params;
 
     _(this).components = components;
+    _(this).subscribers = {};
 
     if (methods != null) {
       this.setMethods(methods);
@@ -42,6 +55,20 @@ class Miru implements Miru.IMiru {
     }
   }
 
+  private notify(key, value) {
+    if (Object.keys(_(this).subscribers).includes(key)) {
+      _(this).subscribers[key].forEach(e => e(value));
+    }
+  }
+
+  private observe(key, func) {
+    if (!Object.keys(_(this).subscribers).includes(key)) {
+      _(this).subscribers[key] = [];
+    }
+
+    _(this).subscribers[key].push(func);
+  }
+
   private setMethods(methods) {
     for (let key of Object.keys(methods)) {
       this[key] = methods[key].bind(this);
@@ -59,7 +86,7 @@ class Miru implements Miru.IMiru {
   }
 
   setProps(props) {
-    Object.keys(props).forEach((key) => {
+    Object.keys(props).forEach(key => {
       this[key] = props[key];
     });
   }
@@ -74,7 +101,6 @@ class Miru implements Miru.IMiru {
       } else {
         patch(_(this).vnode, vnode);
       }
-      // _(this).vnode = vnode;
     }
 
     return _(this).tree;
@@ -82,29 +108,40 @@ class Miru implements Miru.IMiru {
 
   private setData(data, watch) {
     _(this).data = data;
-    _(this).watch = {};
+    _(this).deps = {};
 
     if (watch != null) {
-      for(let key of Object.keys(watch)) {
-        _(this).watch[key] = watch[key].bind(this);
+      for (let key of Object.keys(watch)) {
+        this.observe(key, watch[key].bind(this));
       }
     }
 
     for (let key of Object.keys(data)) {
+      // const deps = new Set();
+      _(this).deps[key] = new Set();
+
       Object.defineProperty(this, key, {
         get() {
+          if (dep.target) {
+            _(this).deps[key].add(dep.target);
+          }
+
           return _(this).data[key];
         },
         set(value) {
           _(this).data[key] = value;
 
-          if (_(this).watch[key] != null) {
-            _(this).watch[key](value);
+          if (_(this).deps[key].size > 0) {
+            _(this).deps[key].forEach(d => {
+              this.notify(d, value);
+            });
           }
+
+          this.notify(key, value);
 
           this.doPatch();
         }
-      })
+      });
     }
   }
 
@@ -125,20 +162,40 @@ class Miru implements Miru.IMiru {
 
           this.doPatch();
         }
-      })
+      });
     }
   }
 
   private setComputed(computed) {
     _(this).computedFunctions = {};
+    _(this).computedCaches = {};
+
     for (let key of Object.keys(computed)) {
       _(this).computedFunctions[key] = computed[key].bind(this);
+      _(this).computedCaches[key] = null;
+
+      this.observe(key, () => {
+        _(this).computedCaches[key] = null;
+      });
 
       Object.defineProperty(this, key, {
         get() {
-          return _(this).computedFunctions[key]();
-        }
-      })
+          if (dep.target === null) {
+            dep.target = key;
+          }
+
+          if (_(this).computedCaches[key] === null) {
+            _(this).computedCaches[key] = _(this).computedFunctions[key]();
+          }
+
+          const value = _(this).computedCaches[key];
+
+          dep.target = null;
+
+          return value;
+        },
+        set() {}
+      });
     }
   }
 }
