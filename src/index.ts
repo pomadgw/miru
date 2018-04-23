@@ -49,7 +49,8 @@ class Miru implements Miru.IMiru {
   }
 
   $mount(selector) {
-    _(this).tree = toVNode(document.querySelector(selector));
+    _(this).tree = document.querySelector(selector);
+    _(this).vnode = null;
     this.doPatch();
   }
 
@@ -67,9 +68,15 @@ class Miru implements Miru.IMiru {
     if (_(this).render != null) {
       const vnode = _(this).render();
       processComponent(vnode, _(this).components);
-      patch(_(this).tree, vnode);
-      // _(this).tree = vnode;
+      if (_(this).vnode === null) {
+        patch(_(this).tree, vnode);
+        _(this).vnode = vnode;
+      } else {
+        patch(_(this).vnode, vnode);
+      }
+      // _(this).vnode = vnode;
     }
+
     return _(this).tree;
   }
 
