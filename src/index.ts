@@ -3,6 +3,7 @@ import { init } from 'snabbdom';
 import snabprop from 'snabbdom/modules/props';
 import snabattr from 'snabbdom/modules/attributes';
 import snabevent from 'snabbdom/modules/eventlisteners';
+import toVNode from "snabbdom/tovnode";
 import { hyper, processComponent } from '../src/h';
 import { _data, _ } from './data';
 
@@ -48,7 +49,7 @@ class Miru implements Miru.IMiru {
   }
 
   $mount(selector) {
-    _(this).tree = document.querySelector(selector);
+    _(this).tree = toVNode(document.querySelector(selector));
     this.doPatch();
   }
 
@@ -67,7 +68,7 @@ class Miru implements Miru.IMiru {
       const vnode = _(this).render();
       processComponent(vnode, _(this).components);
       patch(_(this).tree, vnode);
-      _(this).tree = vnode;
+      // _(this).tree = vnode;
     }
     return _(this).tree;
   }
