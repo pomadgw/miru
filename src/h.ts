@@ -53,7 +53,7 @@ export function processComponent(vnode, components) {
         const obj = components[el.sel];
         obj.setProps(el.data.attrs);
         vnode.children[idx] = _(obj).render();
-        console.log(vnode.children[idx])
+        // console.log(vnode.children[idx])
       }
     });
   }
