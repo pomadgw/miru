@@ -1,7 +1,7 @@
 /// <reference path="index.d.ts" />
 import { init } from "snabbdom";
 import snabprop from "snabbdom/modules/props";
-import snabattr from "snabbdom/modules/attributes";
+import snabattr, { Attrs } from "snabbdom/modules/attributes";
 import snabevent from "snabbdom/modules/eventlisteners";
 import toVNode from "snabbdom/tovnode";
 import { hyper, processComponent } from "../src/h";
@@ -92,15 +92,17 @@ class Miru implements Miru.IMiru {
     if (_(this).render != null) {
       const vnode = _(this).render();
       processComponent(vnode, _(this).components);
-      if (_(this).vnode === null) {
-        patch(_(this).tree, vnode);
+      if (_(this).vnode == null) {
+        if (_(this).tree != null) patch(_(this).tree, vnode);
         _(this).vnode = vnode;
       } else {
         patch(_(this).vnode, vnode);
       }
+
+      return _(this).vnode;
     }
 
-    return _(this).tree;
+    return null;
   }
 
   private setData(data, watch) {
@@ -143,17 +145,29 @@ class Miru implements Miru.IMiru {
   private setupProps(props) {
     _(this).props = {};
 
-    for (let key of Object.keys(props)) {
+    for (let i = 0; i < props.length; i += 1) {
+      const key = props[i];
+      const deps = new Dependency();
+
       Object.defineProperty(this, key, {
         get() {
+          if (Dependency.hasTarget()) {
+            deps.depend(key);
+          }
+
           return _(this).props[key];
         },
         set(value) {
           _(this).props[key] = value;
 
-          if (_(this).watch[key] != null) {
-            _(this).watch[key](value);
-          }
+          deps.clearUpDeps(key);
+          deps.notify(value, this.notify.bind(this));
+
+          this.notify(key, value);
+
+          // if (_(this).watch[key] != null) {
+          //   _(this).watch[key](value);
+          // }
 
           this.doPatch();
         }
