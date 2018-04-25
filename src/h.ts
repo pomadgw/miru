@@ -46,14 +46,13 @@ export function hyper(tagname, attr, ...children) {
   return process(h(tagname, attrs, children), attr);
 }
 
-export function processComponent(vnode, components) {
+export function processComponent(vnode, components, rerender = true) {
   if (components) {
     vnode.children.forEach((el, idx) => {
       if (el.sel in components) {
         const obj = components[el.sel];
         obj.setProps(el.data.attrs);
-        vnode.children[idx] = _(obj).render();
-        // console.log(vnode.children[idx])
+        vnode.children[idx] = obj.doPatch();
       }
     });
   }
