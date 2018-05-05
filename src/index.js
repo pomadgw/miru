@@ -7,6 +7,9 @@ function setData(vm, data) {
       get() {
         return $data[key];
       },
+      set(value) {
+        $data[key] = value;
+      },
     });
   });
 }
