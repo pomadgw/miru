@@ -11,8 +11,16 @@ function setData(vm, data) {
   });
 }
 
+function setMethod(vm, methods) {
+  const vmTmp = vm;
+  Object.keys(methods).forEach((key) => {
+    vmTmp[key] = methods[key].bind(vm);
+  });
+}
+
 export default class Miru {
-  constructor({ data }) {
+  constructor({ data = {}, methods = {} } = {}) {
     setData(this, data);
+    setMethod(this, methods);
   }
 }
