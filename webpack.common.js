@@ -11,7 +11,7 @@ module.exports = {
   },
   entry: {
     miru: './src/index.ts',
-    example: './src/example.jsx'
+    // example: './src/example.jsx'
   },
   plugins: [
     new CleanWebpackPlugin(['build'])

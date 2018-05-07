@@ -5,6 +5,7 @@
   "main": "index.js",
   "author": "Rahadian Yusuf",
   "license": "MIT",
+  "sideEffects": false,
   "devDependencies": {
     "@types/core-js": "^0.9.46",
     "@types/jest": "^22.1.1",
@@ -37,14 +38,15 @@
   },
   "scripts": {
     "dev": "webpack --mode development",
-    "build": "webpack --mode production",
+    "build": "NODE_ENV=production webpack --mode production",
     "test": "yarn run-test && yarn posttest",
     "run-test": "jest --coverage",
     "posttest": "codecov"
   },
   "jest": {
     "transform": {
-      "^.+\\.tsx?$": "ts-jest"
+      "^.+\\.tsx?$": "ts-jest",
+      "^.+\\.js$": "babel-jest"
     },
     "testRegex": "(/tests/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
     "moduleFileExtensions": [
@@ -58,6 +60,7 @@
   },
   "dependencies": {
     "lodash.omit": "^4.5.0",
+    "setimmediate": "^1.0.5",
     "snabbdom": "^0.7.1"
   }
 }
