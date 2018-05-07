@@ -11,12 +11,26 @@ describe('Basic stuffs', () => {
       },
       addOne() {
         this.number += 1;
-      }
-    }
+      },
+    },
+  });
+  const vm2 = new Miru({
+    data: {
+      data: 10,
+    },
+    methods: {
+      test() {
+        return 10;
+      },
+      addOne() {
+        this.number += 1;
+      },
+    },
   });
 
   test('it has an data', () => {
     expect(vm.number).toBe(1023);
+    expect(vm2.data).toBe(10);
   });
 
   test('it has an method', () => {
