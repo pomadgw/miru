@@ -1,3 +1,5 @@
+// @flow
+
 function setData(vm, data) {
   const isFunc = typeof data === 'function';
   const $data = isFunc ? data() : data;
@@ -21,9 +23,33 @@ function setMethod(vm, methods) {
   });
 }
 
+let tickFunctions = [];
+let tickIsRunning = false;
+
+setInterval(() => {
+  tickIsRunning = true;
+  tickFunctions.forEach(e => e());
+
+  tickFunctions = [];
+  tickIsRunning = false;
+}, 25);
+
+async function addTickFunc(func) {
+  for (;;) {
+    if (!tickIsRunning) {
+      tickFunctions.push(func);
+      break;
+    }
+  }
+}
+
 export default class Miru {
   constructor({ data = {}, methods = {} } = {}) {
     setData(this, data);
     setMethod(this, methods);
+  }
+
+  static $nextTick(func) {
+    addTickFunc(func);
   }
 }
