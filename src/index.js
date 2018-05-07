@@ -1,5 +1,7 @@
 // @flow
 
+import 'setimmediate';
+
 function setData(vm, data) {
   const isFunc = typeof data === 'function';
   const $data = isFunc ? data() : data;
@@ -23,24 +25,16 @@ function setMethod(vm, methods) {
   });
 }
 
-let tickFunctions = [];
+let callbacks = [];
 let tickIsRunning = false;
 
-setInterval(() => {
-  tickIsRunning = true;
-  tickFunctions.forEach(e => e());
-
-  tickFunctions = [];
+function runCallbacks() {
   tickIsRunning = false;
-}, 25);
+  callbacks.slice(0).forEach((callback) => {
+    callback();
+  });
 
-async function addTickFunc(func) {
-  for (;;) {
-    if (!tickIsRunning) {
-      tickFunctions.push(func);
-      break;
-    }
-  }
+  callbacks = [];
 }
 
 export default class Miru {
@@ -49,7 +43,14 @@ export default class Miru {
     setMethod(this, methods);
   }
 
-  static $nextTick(func) {
-    addTickFunc(func);
+  static $nextTick(func, context = null) {
+    callbacks.push(() => {
+      func.call(context);
+    });
+
+    if (!tickIsRunning) {
+      tickIsRunning = true;
+      setImmediate(runCallbacks);
+    }
   }
 }
