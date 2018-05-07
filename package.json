@@ -5,6 +5,7 @@
   "main": "index.js",
   "author": "Rahadian Yusuf",
   "license": "MIT",
+  "sideEffects": false,
   "devDependencies": {
     "@types/core-js": "^0.9.46",
     "@types/jest": "^22.1.1",
@@ -37,7 +38,7 @@
   },
   "scripts": {
     "dev": "webpack --mode development",
-    "build": "webpack --mode production",
+    "build": "NODE_ENV=production webpack --mode production",
     "test": "yarn run-test && yarn posttest",
     "run-test": "jest --coverage",
     "posttest": "codecov"
