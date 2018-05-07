@@ -34,7 +34,7 @@ function runCallbacks() {
     callback();
   });
 
-  callbacks = [];
+  callbacks.length = 0;
 }
 
 export default class Miru {
