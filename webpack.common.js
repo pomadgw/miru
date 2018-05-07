@@ -10,7 +10,7 @@ module.exports = {
     extensions: ['.ts', '.tsx', '.js', '.jsx']
   },
   entry: {
-    miru: './src/index.js',
+    miru: './src/index.ts',
     // example: './src/example.jsx'
   },
   plugins: [
