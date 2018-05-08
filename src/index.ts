@@ -1,6 +1,5 @@
 // @flow
-
-import 'setimmediate';
+import nextTick from './utils/tick';
 
 function setData(vm, data) {
   const isFunc = typeof data === 'function';
@@ -25,32 +24,17 @@ function setMethod(vm, methods) {
   });
 }
 
-let callbacks = [];
-let tickIsRunning = false;
-
-function runCallbacks() {
-  tickIsRunning = false;
-  callbacks.slice(0).forEach((callback) => {
-    callback();
-  });
-
-  callbacks.length = 0;
-}
-
 export default class Miru {
   constructor({ data = {}, methods = {} } = {}) {
     setData(this, data);
     setMethod(this, methods);
   }
 
-  static $nextTick(func, context = null) {
-    callbacks.push(() => {
-      func.call(context);
-    });
+  $nextTick(func) {
+    nextTick(func, this);
+  }
 
-    if (!tickIsRunning) {
-      tickIsRunning = true;
-      setImmediate(runCallbacks);
-    }
+  static $nextTick(func, context = null) {
+    nextTick(func, context);
   }
 }
