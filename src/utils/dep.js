@@ -1,9 +1,4 @@
-export default class Dependency {
-  static target = null;
-
-  subscribers;
-  deps;
-
+class Dependency {
   constructor() {
     this.subscribers = {};
     this.deps = new Set();
@@ -20,10 +15,7 @@ export default class Dependency {
   depend(dep) {
     this.deps.add(Dependency.target);
 
-    if (
-      this.subscribers[Dependency.target] &&
-      !this.subscribers[Dependency.target].includes(dep)
-    ) {
+    if (this.subscribers[Dependency.target] && !this.subscribers[Dependency.target].includes(dep)) {
       this.subscribers[Dependency.target].push(dep);
     }
   }
@@ -32,9 +24,7 @@ export default class Dependency {
     if (!this.subscribers[Dependency.target]) {
       return this.deps;
     }
-    return this.deps.filter(dep => {
-      return this.subscribers[key].includes(key);
-    });
+    return this.deps.filter(() => this.subscribers[key].includes(key));
   }
 
   clearUpDeps(key) {
@@ -45,3 +35,7 @@ export default class Dependency {
     this.deps.forEach(e => func(e));
   }
 }
+
+Dependency.target = null;
+
+export default Dependency;

@@ -3,9 +3,24 @@ import nextTick from './utils/tick';
 import { $p, $pInit } from './utils/data';
 import Dependency from './utils/dep';
 
-const dep = {
-  target: null,
-};
+
+function observe(context, key, func) {
+  if ($p(context).subscribe == null) {
+    $p(context).subscribe = {};
+  }
+
+  if ($p(context).subscribe[key] == null) {
+    $p(context).subscribe[key] = [];
+  }
+
+  $p(context).subscribe[key].push(func);
+}
+
+function notify(context, key, value = null) {
+  if ($p(context).subscribe && $p(context).subscribe[key]) {
+    $p(context).subscribe[key].forEach(func => func(value));
+  }
+}
 
 function setData(vm, data) {
   const isFunc = typeof data === 'function';
@@ -25,7 +40,7 @@ function setData(vm, data) {
       set(value) {
         $data[key] = value;
         deps.clearUpDeps(key);
-        deps.notify((e) => notify(vm, e, value));
+        deps.notify(e => notify(vm, e, value));
 
         notify(vm, key, value);
       },
@@ -45,7 +60,7 @@ function setMethod(vm, methods) {
 function setComputed(vm, computed) {
   $p(vm).computedCaches = {};
 
-  Object.keys(computed).forEach(key => {
+  Object.keys(computed).forEach((key) => {
     const deps = new Dependency();
     $p(vm).computedCaches[key] = null;
 
@@ -75,27 +90,9 @@ function setComputed(vm, computed) {
 
         return value;
       },
-      set() { }
+      set() { },
     });
   });
-}
-
-function observe(context, key, func) {
-  if (context._subscribe == null) {
-    context._subscribe = {};
-  }
-
-  if (context._subscribe[key] == null) {
-    context._subscribe[key] = [];
-  }
-
-  context._subscribe[key].push(func);
-}
-
-function notify(context, key, value = null) {
-  if (context._subscribe && context._subscribe[key]) {
-    context._subscribe[key].forEach((func) => func(value));
-  }
 }
 
 export default class Miru {

@@ -56,7 +56,12 @@
       "jsx",
       "json",
       "node"
-    ]
+    ],
+    "globals": {
+      "ts-jest": {
+        "useBabelrc": true
+      }
+    }
   },
   "dependencies": {
     "lodash.omit": "^4.5.0",
