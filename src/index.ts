@@ -24,10 +24,22 @@ function setMethod(vm, methods) {
   });
 }
 
+function setComputed(vm, computed) {
+  Object.keys(computed).forEach(key => {
+    const func = computed[key];
+    Object.defineProperty(vm, key, {
+      get() {
+        return func.call(vm);
+      }
+    });
+  });
+}
+
 export default class Miru {
-  constructor({ data = {}, methods = {} } = {}) {
+  constructor({ data = {}, methods = {}, computed = {} } = {}) {
     setData(this, data);
     setMethod(this, methods);
+    setComputed(this, computed);
   }
 
   $nextTick(func) {
