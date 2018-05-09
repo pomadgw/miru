@@ -1,11 +1,11 @@
 import 'setimmediate';
 
-let callbacks = [];
+const callbacks = [];
 let tickIsRunning = false;
 
 function runCallbacks() {
   tickIsRunning = false;
-  callbacks.slice(0).forEach(callback => {
+  callbacks.slice(0).forEach((callback) => {
     callback();
   });
 
