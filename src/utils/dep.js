@@ -9,21 +9,24 @@ class Dependency {
   }
 
   createEmptySubscribes(key) {
-    this.subscribers[key] = [];
+    this.subscribers[key] = this.subscribers[key] || new Set();
   }
 
   depend(dep) {
     this.deps.add(Dependency.target);
 
-    if (this.subscribers[Dependency.target] && !this.subscribers[Dependency.target].includes(dep)) {
-      this.subscribers[Dependency.target].push(dep);
+    if (!this.subscribers[Dependency.target]) {
+      this.createEmptySubscribes(Dependency.target);
     }
+
+    this.subscribers[Dependency.target].add(dep);
   }
 
   validDeps(key) {
     if (!this.subscribers[Dependency.target]) {
       return this.deps;
     }
+
     return this.deps.filter(() => this.subscribers[key].includes(key));
   }
 
