@@ -39,4 +39,24 @@ describe('Computed stuffs', () => {
 
     expect(called).toBe(1);
   });
+  test('cat computed out of cotehr computed value', () => {
+    const vm = new Miru({
+      data: {
+        number: 1,
+      },
+      computed: {
+        twoTimes() {
+          return this.number * 2;
+        },
+        fourTimes() {
+          return this.twoTimes * 2;
+        },
+      }
+    });
+
+    expect(vm.fourTimes).toBe(4);
+
+    vm.number = 3;
+    expect(vm.fourTimes).toBe(12);
+  });
 });
