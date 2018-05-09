@@ -95,13 +95,23 @@ function setComputed(vm, computed) {
   });
 }
 
+function setWatcher(vm, watcher) {
+  Object.keys(watcher).forEach((key) => {
+    const func = watcher[key];
+    observe(vm, key, (value) => {
+      func.call(vm, value);
+    });
+  });
+}
+
 export default class Miru {
-  constructor({ data = {}, methods = {}, computed = {} } = {}) {
+  constructor({ data = {}, methods = {}, computed = {}, watch = {} } = {}) {
     $pInit(this);
 
     setData(this, data);
     setMethod(this, methods);
     setComputed(this, computed);
+    setWatcher(this, watch);
   }
 
   $nextTick(func) {

@@ -26,11 +26,15 @@ describe('Computed stuffs', () => {
         twoTimes() {
           called += 1;
           return this.number * 2;
+        },
+        text() {
+          return this.show ? 'Yes' : 'No';
         }
       }
     });
 
     const newNumber = vm.twoTimes;
+    const text = vm.text;
     const newNumber2 = vm.twoTimes;
 
     expect(called).toBe(1);
