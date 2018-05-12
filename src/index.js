@@ -7,7 +7,13 @@ import { setData, setComputed, setMethod, setWatcher } from './setters';
 function noop() {}
 
 export default class Miru {
-  constructor({ data = {}, methods = {}, computed = {}, watch = {}, render = noop } = {}) {
+  constructor({
+    data = {},
+    methods = {},
+    computed = {},
+    watch = {},
+    render = noop,
+  } = {}) {
     $pInit(this);
 
     setData(this, data);

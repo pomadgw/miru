@@ -12,12 +12,17 @@ function mount(vm, selector) {
   $p(vm).tree = document.querySelector(selector);
 
   const vdom = $p(vm).render(h);
+  if (!vdom) return;
 
   patch($p(vm).tree, vdom);
+  $p(vm).tree = vdom;
 }
 
-function doPatch() {
+function doPatch(vm) {
+  const vdom = $p(vm).render(h);
+  if (!vdom) return;
 
+  patch($p(vm).tree, vdom);
 }
 
 export { mount, doPatch };

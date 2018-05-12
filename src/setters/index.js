@@ -1,5 +1,6 @@
 import { $p } from '../utils/data';
 import Dependency from '../utils/dep';
+import { doPatch } from '../utils/vdom';
 
 function observe(context, key, func) {
   if ($p(context).subscribe == null) {
@@ -26,6 +27,10 @@ export function setData(vm, data) {
 
   Object.keys($data).forEach((key) => {
     const deps = new Dependency();
+
+    observe(vm, key, () => {
+      doPatch(vm);
+    });
 
     Object.defineProperty(vm, key, {
       get() {
@@ -65,6 +70,7 @@ export function setComputed(vm, computed) {
       $p(vm).computedCaches[key] = null;
       deps.clearUpDeps(key);
       deps.notify(e => notify(vm, e));
+      doPatch(vm);
     });
 
     const func = computed[key];
