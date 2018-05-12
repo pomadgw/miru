@@ -22,28 +22,28 @@ function notify(context, key, value = null) {
 export function setData(vm, data) {
   const isFunc = typeof data === 'function';
   const $data = isFunc ? data() : data;
-  $p(vm).deps = {};
+  // $p(vm).deps = {};
 
   Object.keys($data).forEach((key) => {
-    const deps = new Dependency();
+    let deps = [];
 
     Object.defineProperty(vm, key, {
       get() {
-        if (Dependency.hasTarget()) {
-          deps.depend(key);
+        if (Dependency.target) {
+          Dependency.depend(deps, key);
         }
         return $data[key];
       },
       set(value) {
         $data[key] = value;
-        deps.clearUpDeps(key);
-        deps.notify(e => notify(vm, e, value));
+        deps = Dependency.getValidDeps(deps, key);
+        Dependency.notifyDeps(deps, e => notify(vm, e, value));
 
         notify(vm, key, value);
       },
     });
 
-    $p(vm).deps[key] = deps;
+    // $p(vm).deps[key] = deps;
   });
 }
 
@@ -58,26 +58,26 @@ export function setComputed(vm, computed) {
   $p(vm).computedCaches = {};
 
   Object.keys(computed).forEach((key) => {
-    const deps = new Dependency();
+    let deps = [];
     $p(vm).computedCaches[key] = null;
 
     observe(vm, key, () => {
       $p(vm).computedCaches[key] = null;
-      deps.clearUpDeps(key);
-      deps.notify(e => notify(vm, e));
+      deps = Dependency.getValidDeps(deps, key);
+      Dependency.notifyDeps(deps, e => notify(vm, e));
     });
 
     const func = computed[key];
     Object.defineProperty(vm, key, {
       get() {
-        if (Dependency.hasTarget()) {
-          deps.depend(key);
+        if (Dependency.target) {
+          Dependency.depend(deps, key);
         }
 
         Dependency.target = key;
 
         if ($p(vm).computedCaches[key] === null) {
-          deps.createEmptySubscribes(key);
+          Dependency.subs[key] = [];
           $p(vm).computedCaches[key] = func.call(vm);
         }
 
