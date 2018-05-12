@@ -25,7 +25,9 @@
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-jsx": "^0.0.2",
+    "husky": "^0.14.3",
     "jest": "^22.1.4",
+    "lint-staged": "^7.1.0",
     "nyc": "^11.4.1",
     "source-map-loader": "^0.2.3",
     "standard": "^11.0.1",
@@ -41,7 +43,15 @@
     "build": "NODE_ENV=production webpack --mode production",
     "test": "yarn run-test && yarn posttest",
     "run-test": "jest --coverage",
-    "posttest": "codecov"
+    "posttest": "codecov",
+    "precommit": "lint-staged"
+  },
+  "lint-staged": {
+    "src/**/*.js": [
+      "prettier --tab-width 2 --use-tabs false --single-quote --trailing-comma es5 --write",
+      "eslint --fix",
+      "git add"
+    ]
   },
   "jest": {
     "transform": {
