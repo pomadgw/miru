@@ -15,8 +15,8 @@ function transformComponent(vdom, components) {
   });
 
   const listOfComponents = Object.keys(components).reduce((acc, v) => {
-    if (components.name) {
-      acc[components.name] = components[v];
+    if (components[v].name) {
+      acc[components[v].name] = components[v];
     } else {
       acc[v] = components[v];
     }
