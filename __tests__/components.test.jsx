@@ -125,4 +125,33 @@ describe('Components', () => {
     expect(dom).not.toBeNull();
     expect(dom.textContent).toBe('Cardcaptor Sakura: Clear Card');
   });
+
+  test('can rerender component when its data is changed', () => {
+    const comp = new Miru({
+      name: 'comp',
+      data() {
+        return { comicName: 'Cardcaptor Sakura' };
+      },
+      render(h) {
+        return <div id="comic">{this.comicName}</div>;
+      },
+    });
+
+    const vm = new Miru({
+      components: { comp },
+      render(h) {
+        return <div><comp /></div>;
+      }
+    });
+
+    document.body.innerHTML = `<div id="app"></div>`;
+
+    vm.$mount('#app');
+
+    comp.comicName = 'Bleach';
+
+    const dom = document.querySelector('#comic');
+    expect(dom).not.toBeNull();
+    expect(dom.textContent).toBe('Bleach');
+  });
 });
