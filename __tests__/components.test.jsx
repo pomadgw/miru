@@ -2,7 +2,7 @@ import Miru from '../src';
 
 describe('Components', () => {
   test('can inject component', () => {
-    const comp = new Miru({
+    const comp = {
       name: 'comp',
       data() {
         return { comicName: 'Cardcaptor Sakura' };
@@ -10,7 +10,7 @@ describe('Components', () => {
       render(h) {
         return <div id="comic">{this.comicName}</div>;
       },
-    });
+    };
 
     const vm = new Miru({
       components: { comp },

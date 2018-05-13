@@ -3,8 +3,9 @@ import sProps from 'snabbdom/modules/props';
 import sClass from 'snabbdom/modules/class';
 import sEvent from 'snabbdom/modules/eventlisteners';
 import h from '../utils/h';
-
 import { $p } from './data';
+
+import Miru from '../index';
 
 const patch = init([sProps, sClass, sEvent]);
 
@@ -25,7 +26,7 @@ function transformComponent(vdom, components) {
   }, {});
 
   if (compTagNames.includes(vdom.sel)) {
-    const component = listOfComponents[vdom.sel];
+    const component = new Miru(listOfComponents[vdom.sel]);
     return $p(component).render(h);
   }
 
