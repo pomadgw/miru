@@ -10,7 +10,7 @@ const patch = init([sProps, sClass, sEvent]);
 
 function transformComponent(vdom, components) {
   const compTagNames = Object.keys(components).map((e) => {
-    if (components.name) return components.name;
+    if (components[e].name) return components[e].name;
     return e;
   });
 
