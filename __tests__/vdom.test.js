@@ -4,7 +4,7 @@ describe('Virtual DOM', () => {
   test('can mount and render HTML', () => {
     const vm = new Miru({
       render(h) {
-        return h('div', { props: { id: 'test' } }, ['test']);
+        return h('div', { id: 'test' }, 'test');
       },
     });
 
@@ -23,7 +23,7 @@ describe('Virtual DOM', () => {
         number: 10,
       },
       render(h) {
-        return h('div', { props: { id: 'test' } }, [this.number]);
+        return h('div', { id: 'test' }, this.number);
       },
     });
 
@@ -42,7 +42,7 @@ describe('Virtual DOM', () => {
         number: 10,
       },
       render(h) {
-        return h('div', { props: { id: 'test' } }, [this.number]);
+        return h('div', { id: 'test' }, this.number);
       },
     });
 
@@ -68,7 +68,7 @@ describe('Virtual DOM', () => {
         },
       },
       render(h) {
-        return h('div', { props: { id: 'test' } }, [this.twoTimes]);
+        return h('div', { id: 'test' }, this.twoTimes);
       },
     });
 

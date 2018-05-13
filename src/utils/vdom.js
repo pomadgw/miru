@@ -2,7 +2,7 @@ import { init } from 'snabbdom';
 import sProps from 'snabbdom/modules/props';
 import sClass from 'snabbdom/modules/class';
 import sEvent from 'snabbdom/modules/eventlisteners';
-import h from 'snabbdom/h';
+import h from '../utils/h';
 
 import { $p } from './data';
 
