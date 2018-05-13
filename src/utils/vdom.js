@@ -8,21 +8,47 @@ import { $p } from './data';
 
 const patch = init([sProps, sClass, sEvent]);
 
-function mount(vm, selector) {
-  $p(vm).tree = document.querySelector(selector);
+function transformComponent(vdom, components) {
+  const compTagNames = Object.keys(components).map((e) => {
+    if (components.name) return components.name;
+    return e;
+  });
 
-  const vdom = $p(vm).render(h);
-  if (!vdom) return;
+  const listOfComponents = Object.keys(components).reduce((acc, v) => {
+    if (components.name) {
+      acc[components.name] = components[v];
+    } else {
+      acc[v] = components[v];
+    }
 
-  patch($p(vm).tree, vdom);
-  $p(vm).tree = vdom;
+    return acc;
+  }, {});
+
+  if (compTagNames.includes(vdom.sel)) {
+    const component = listOfComponents[vdom.sel];
+    return $p(component).render(h);
+  }
+
+  return vdom;
 }
 
 function doPatch(vm) {
-  const vdom = $p(vm).render(h);
+  let vdom = $p(vm).render(h);
   if (!vdom) return;
 
+  vdom = transformComponent(vdom, $p(vm).components);
+
   patch($p(vm).tree, vdom);
+}
+
+function mount(vm, selector) {
+  let vdom = $p(vm).render(h);
+  if (!vdom) return;
+
+  vdom = transformComponent(vdom, $p(vm).components);
+
+  patch(document.querySelector(selector), vdom);
+  $p(vm).tree = vdom;
 }
 
 export { mount, doPatch };
