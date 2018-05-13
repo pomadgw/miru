@@ -10,6 +10,8 @@ import Miru from '../index';
 const patch = init([sProps, sClass, sEvent]);
 
 function transformComponent(vdom, components) {
+  const newVdom = Object.assign({}, vdom);
+
   const compTagNames = Object.keys(components).map((e) => {
     if (components[e].name) return components[e].name;
     return e;
@@ -25,12 +27,17 @@ function transformComponent(vdom, components) {
     return acc;
   }, {});
 
-  if (compTagNames.includes(vdom.sel)) {
-    const component = new Miru(listOfComponents[vdom.sel]);
+  if (compTagNames.includes(newVdom.sel)) {
+    const component = new Miru(listOfComponents[newVdom.sel]);
     return $p(component).render(h);
   }
 
-  return vdom;
+  if (newVdom.children) {
+    newVdom.children = newVdom.children.map(child =>
+      transformComponent(child, components));
+  }
+
+  return newVdom;
 }
 
 function doPatch(vm) {
