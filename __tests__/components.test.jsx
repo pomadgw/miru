@@ -28,6 +28,32 @@ describe('Components', () => {
     expect(dom.textContent).toBe('Cardcaptor Sakura');
   });
 
+  test('can inject component with no name specified', () => {
+    const beatles = {
+      data() {
+        return { comicName: 'Cardcaptor Sakura' };
+      },
+      render(h) {
+        return <div id="comic">{this.comicName}</div>;
+      },
+    };
+
+    const vm = new Miru({
+      components: { beatles },
+      render(h) {
+        return <beatles />;
+      }
+    });
+
+    document.body.innerHTML = `<div id="app"></div>`;
+
+    vm.$mount('#app');
+
+    const dom = document.querySelector('#comic');
+    expect(dom).not.toBeNull();
+    expect(dom.textContent).toBe('Cardcaptor Sakura');
+  });
+
   test('can render component as child', () => {
     const comp = {
       name: 'comp',
