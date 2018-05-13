@@ -1,11 +1,18 @@
 // @flow
 import nextTick from './utils/tick';
 import { $p, $pInit } from './utils/data';
+import { mount } from './utils/vdom';
 import { setData, setComputed, setMethod, setWatcher } from './setters';
+
+function noop() {}
 
 export default class Miru {
   constructor({
-    data = {}, methods = {}, computed = {}, watch = {},
+    data = {},
+    methods = {},
+    computed = {},
+    watch = {},
+    render = noop,
   } = {}) {
     $pInit(this);
 
@@ -15,6 +22,11 @@ export default class Miru {
     setWatcher(this, watch);
 
     $p(this).events = {};
+    $p(this).render = render.bind(this);
+  }
+
+  $mount(selector) {
+    mount(this, selector);
   }
 
   $nextTick(func) {
