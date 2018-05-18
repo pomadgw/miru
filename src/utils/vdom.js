@@ -11,6 +11,7 @@ const patch = init([sProps, sClass, sEvent]);
 
 function transformComponent(vdom, components, parent = null) {
   const newVdom = Object.assign({}, vdom);
+  const { props } = vdom.data || { props: {} };
 
   const compTagNames = Object.keys(components).map((e) => {
     if (components[e].name) return components[e].name;
@@ -31,6 +32,12 @@ function transformComponent(vdom, components, parent = null) {
     const componentObj = listOfComponents[newVdom.sel];
     const isMiruObj = componentObj.constructor.name === 'Miru';
     const component = isMiruObj ? componentObj : new Miru({ ...componentObj });
+    Object.keys(props).forEach((key) => {
+      if (Object.prototype.hasOwnProperty.call(component, key)) {
+        component[key] = props[key];
+      }
+    });
+
     $p(component).parent = parent;
     return $p(component).render(h);
   }
