@@ -85,4 +85,36 @@ describe('Component: Props', () => {
     const dom = document.querySelector('#testProp');
     expect(dom.textContent).toBe('246');
   })
+
+  test('props can be watched', () => {
+    let status;
+    const vm = new Miru({
+      components: {
+        'test': {
+          props: ['prop'],
+          watch: {
+            prop() {
+              status = 'changed';
+            }
+          },
+          render(h) {
+            return <div id="testProp">{this.twice}</div>;
+          }
+        }
+      },
+      data: {
+        number: 123
+      },
+      render(h) {
+        return <test prop={this.number} />;
+      }
+    });
+
+    document.body.innerHTML = `<div id="app"></div>`;
+
+    vm.$mount('#app');
+    vm.number = 100;
+
+    expect(status).toBe('changed');
+  })
 })
