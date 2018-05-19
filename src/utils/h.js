@@ -8,6 +8,16 @@ function preprocess(props) {
         if (val === 'class') {
           acc.class = acc.class !== undefined ? acc.class : {};
           acc.class[props[val]] = true;
+        } else if (val === 'style') {
+          const styles = props[val]
+            .split(/\s*;\s*/)
+            .map(style => style.split(/\s*:\s*/))
+            .reduce((accu, styleArray) => {
+              const [attr, value] = styleArray;
+              accu[attr] = value; // eslint-disable-line no-param-reassign
+              return accu;
+            }, {});
+          acc.style = styles;
         } else {
           acc.props[val] = props[val];
         }
