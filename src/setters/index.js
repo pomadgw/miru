@@ -106,3 +106,31 @@ export function setWatcher(vm, watcher) {
     });
   });
 }
+
+export function setProps(vm, props) {
+  $p(vm).props = props;
+  props.forEach((key) => {
+    let deps = [];
+    let propValue = null;
+
+    // observe(vm, key, () => {
+    //   doPatch(vm);
+    // });
+
+    Object.defineProperty(vm, key, {
+      get() {
+        if (Dependency.target) {
+          Dependency.depend(deps, key);
+        }
+        return propValue;
+      },
+      set(value) {
+        propValue = value;
+        deps = Dependency.getValidDeps(deps, key);
+        Dependency.notifyDeps(deps, e => notify(vm, e, value));
+
+        notify(vm, key, value);
+      },
+    });
+  });
+}
