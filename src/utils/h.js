@@ -5,7 +5,12 @@ function preprocess(props) {
     (acc, val) => {
       const array = val.split('-');
       if (array.length === 1) {
-        acc.props[val] = props[val];
+        if (val === 'class') {
+          acc.class = acc.class !== undefined ? acc.class : {};
+          acc.class[props[val]] = true;
+        } else {
+          acc.props[val] = props[val];
+        }
       } else {
         const [directive, type] = array;
         if (!Object.prototype.hasOwnProperty.call(acc, directive)) {
