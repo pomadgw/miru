@@ -54,4 +54,35 @@ describe('Component: Props', () => {
     expect(dom.textContent).not.toBe('1289');
     expect(dom.textContent).toBe('10000');
   });
+
+  test('computed can use props', () => {
+    const vm = new Miru({
+      components: {
+        'test': {
+          props: ['prop'],
+          computed: {
+            twice() {
+              return this.prop * 2;
+            }
+          },
+          render(h) {
+            return <div id="testProp">{this.twice}</div>;
+          }
+        }
+      },
+      data: {
+        number: 123
+      },
+      render(h) {
+        return <test prop={this.number} />;
+      }
+    });
+
+    document.body.innerHTML = `<div id="app"></div>`;
+
+    vm.$mount('#app');
+
+    const dom = document.querySelector('#testProp');
+    expect(dom.textContent).toBe('246');
+  })
 })
