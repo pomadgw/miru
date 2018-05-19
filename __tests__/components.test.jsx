@@ -154,4 +154,36 @@ describe('Components', () => {
     expect(dom).not.toBeNull();
     expect(dom.textContent).toBe('Bleach');
   });
+  test('each component instance different', () => {
+    const vm = new Miru({
+      components: {
+        'test': {
+          props: ['prop'],
+          render(h) {
+            return <div class="testProp">{this.prop}</div>;
+          }
+        }
+      },
+      data: {
+        number: 1289
+      },
+      render(h) {
+        return <div>
+            <test prop={100} />
+            <test prop={200} />
+          </div>;
+      }
+    })
+
+    document.body.innerHTML = `<div id="app"></div>`;
+
+    vm.$mount('#app');
+
+    vm.number = 10000;
+
+    const dom = document.getElementsByClassName('testProp');
+    expect(dom.length).toBe(2);
+    expect(dom[0].textContent).toBe('100');
+    expect(dom[1].textContent).toBe('200');
+  });
 });

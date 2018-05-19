@@ -26,4 +26,32 @@ describe('Component: Props', () => {
     const dom = document.querySelector('#testProp');
     expect(dom.textContent).toBe('1289');
   });
+  test('rerender on prop changes', () => {
+    const vm = new Miru({
+      components: {
+        'test': {
+          props: ['prop'],
+          render(h) {
+            return <div id="testProp">{this.prop}</div>;
+          }
+        }
+      },
+      data: {
+        number: 1289
+      },
+      render(h) {
+        return <test prop={this.number} />;
+      }
+    })
+
+    document.body.innerHTML = `<div id="app"></div>`;
+
+    vm.$mount('#app');
+
+    vm.number = 10000;
+
+    const dom = document.querySelector('#testProp');
+    expect(dom.textContent).not.toBe('1289');
+    expect(dom.textContent).toBe('10000');
+  });
 })
