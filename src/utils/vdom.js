@@ -9,9 +9,18 @@ import Miru from '../index';
 
 const patch = init([sProps, sClass, sEvent]);
 
-function transformComponent(vdom, components, parent = null) {
+function attachEvents(vm, vdom) {
+  if (vdom.data !== undefined && vdom.data.on !== undefined) {
+    Object.keys(vdom.data.on).forEach((eventName) => {
+      vm.$on(eventName, vdom.data.on[eventName]);
+    });
+  }
+}
+
+function transformComponent(vm, vdom, components, parent = null) {
   const newVdom = Object.assign({}, vdom);
   const { props } = vdom.data || { props: {} };
+  attachEvents(vm, vdom);
 
   const compTagNames = Object.keys(components).map((e) => {
     if (components[e].name) return components[e].name;
@@ -44,7 +53,7 @@ function transformComponent(vdom, components, parent = null) {
 
   if (newVdom.children) {
     newVdom.children = newVdom.children.map(child =>
-      transformComponent(child, components, parent));
+      transformComponent(vm, child, components, parent));
   }
 
   return newVdom;
@@ -58,7 +67,7 @@ function doPatch(vm) {
   let vdom = $p(vm).render(h);
   if (!vdom) return;
 
-  vdom = transformComponent(vdom, $p(vm).components, vm);
+  vdom = transformComponent(vm, vdom, $p(vm).components, vm);
 
   patch($p(vm).tree, vdom);
 }
@@ -67,7 +76,7 @@ function mount(vm, selector) {
   let vdom = $p(vm).render(h);
   if (!vdom) return;
 
-  vdom = transformComponent(vdom, $p(vm).components, vm);
+  vdom = transformComponent(vm, vdom, $p(vm).components, vm);
 
   patch(document.querySelector(selector), vdom);
   $p(vm).tree = vdom;

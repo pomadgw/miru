@@ -51,8 +51,10 @@ export default class Miru {
   }
 
   $emit(name, ...args) {
-    if ($p(this).events[name]) {
-      $p(this).events[name].forEach(func => func(...args));
+    const { parent } = $p(this);
+    const pParent = $p(parent);
+    if (parent && pParent.events[name]) {
+      $p(parent).events[name].forEach(func => func(...args));
     }
   }
 
