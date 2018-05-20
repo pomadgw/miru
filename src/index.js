@@ -31,6 +31,7 @@ export default class Miru {
     setComputed(this, computed);
     setWatcher(this, watch);
 
+    $p(this).events = {};
     setComponents(this, components);
 
     $p(this).render = render.bind(this);
@@ -42,6 +43,19 @@ export default class Miru {
 
   $nextTick(func) {
     nextTick(func, this);
+  }
+
+  $on(name, func) {
+    $p(this).events[name] = $p(this).events[name] || [];
+    $p(this).events[name].push(func.bind(this));
+  }
+
+  $emit(name, ...args) {
+    const { parent } = $p(this);
+    const pParent = $p(parent);
+    if (parent && pParent.events[name]) {
+      $p(parent).events[name].forEach(func => func(...args));
+    }
   }
 
   static $nextTick(func, context = null) {
