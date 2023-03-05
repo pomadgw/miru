@@ -30,5 +30,8 @@
   },
   "lint-staged": {
     "*.ts": "eslint --fix"
+  },
+  "dependencies": {
+    "snabbdom": "^3.5.1"
   }
 }
